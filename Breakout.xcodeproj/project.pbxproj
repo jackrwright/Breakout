@@ -7,21 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		213604D31DE0EA6600ACF841 /* UIKit Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213604D21DE0EA6600ACF841 /* UIKit Extensions.swift */; };
+		213604DB1DE205B100ACF841 /* BallBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213604DA1DE205B100ACF841 /* BallBehavior.swift */; };
+		213604DF1DE2203000ACF841 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213604DE1DE2203000ACF841 /* Settings.swift */; };
 		21E5808A1DE0A2FB007DC07B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E580891DE0A2FB007DC07B /* AppDelegate.swift */; };
-		21E5808C1DE0A2FB007DC07B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E5808B1DE0A2FB007DC07B /* ViewController.swift */; };
 		21E5808F1DE0A2FB007DC07B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21E5808D1DE0A2FB007DC07B /* Main.storyboard */; };
 		21E580911DE0A2FB007DC07B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E580901DE0A2FB007DC07B /* Assets.xcassets */; };
 		21E580941DE0A2FB007DC07B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21E580921DE0A2FB007DC07B /* LaunchScreen.storyboard */; };
+		21E5809D1DE0A38B007DC07B /* BreakoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E5809C1DE0A38B007DC07B /* BreakoutViewController.swift */; };
+		21E5809F1DE0A3BB007DC07B /* BreakoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E5809E1DE0A3BB007DC07B /* BreakoutView.swift */; };
+		21E580A11DE0A553007DC07B /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E580A01DE0A553007DC07B /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		213604D21DE0EA6600ACF841 /* UIKit Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit Extensions.swift"; sourceTree = "<group>"; };
+		213604DA1DE205B100ACF841 /* BallBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallBehavior.swift; sourceTree = "<group>"; };
+		213604DE1DE2203000ACF841 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		21E580861DE0A2FB007DC07B /* Breakout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E580891DE0A2FB007DC07B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		21E5808B1DE0A2FB007DC07B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		21E5808E1DE0A2FB007DC07B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		21E580901DE0A2FB007DC07B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21E580931DE0A2FB007DC07B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		21E580951DE0A2FB007DC07B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21E5809C1DE0A38B007DC07B /* BreakoutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakoutViewController.swift; sourceTree = "<group>"; };
+		21E5809E1DE0A3BB007DC07B /* BreakoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakoutView.swift; sourceTree = "<group>"; };
+		21E580A01DE0A553007DC07B /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +45,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		213604E01DE2269000ACF841 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				213604DE1DE2203000ACF841 /* Settings.swift */,
+				21E580A01DE0A553007DC07B /* SettingsViewController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		21E5807D1DE0A2FB007DC07B = {
 			isa = PBXGroup;
 			children = (
@@ -54,14 +73,26 @@
 		21E580881DE0A2FB007DC07B /* Breakout */ = {
 			isa = PBXGroup;
 			children = (
-				21E580891DE0A2FB007DC07B /* AppDelegate.swift */,
-				21E5808B1DE0A2FB007DC07B /* ViewController.swift */,
+				21E5809E1DE0A3BB007DC07B /* BreakoutView.swift */,
+				21E5809C1DE0A38B007DC07B /* BreakoutViewController.swift */,
+				213604DA1DE205B100ACF841 /* BallBehavior.swift */,
 				21E5808D1DE0A2FB007DC07B /* Main.storyboard */,
+				213604E01DE2269000ACF841 /* Settings */,
+				213604D21DE0EA6600ACF841 /* UIKit Extensions.swift */,
+				21E5809B1DE0A345007DC07B /* Supporting Files */,
 				21E580901DE0A2FB007DC07B /* Assets.xcassets */,
+			);
+			path = Breakout;
+			sourceTree = "<group>";
+		};
+		21E5809B1DE0A345007DC07B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				21E580891DE0A2FB007DC07B /* AppDelegate.swift */,
 				21E580921DE0A2FB007DC07B /* LaunchScreen.storyboard */,
 				21E580951DE0A2FB007DC07B /* Info.plist */,
 			);
-			path = Breakout;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,8 +168,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21E5808C1DE0A2FB007DC07B /* ViewController.swift in Sources */,
+				213604D31DE0EA6600ACF841 /* UIKit Extensions.swift in Sources */,
+				21E5809F1DE0A3BB007DC07B /* BreakoutView.swift in Sources */,
+				213604DB1DE205B100ACF841 /* BallBehavior.swift in Sources */,
 				21E5808A1DE0A2FB007DC07B /* AppDelegate.swift in Sources */,
+				213604DF1DE2203000ACF841 /* Settings.swift in Sources */,
+				21E5809D1DE0A38B007DC07B /* BreakoutViewController.swift in Sources */,
+				21E580A11DE0A553007DC07B /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +301,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.jackcraft.Breakout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -278,6 +315,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.jackcraft.Breakout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -300,6 +338,7 @@
 				21E5809A1DE0A2FB007DC07B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
