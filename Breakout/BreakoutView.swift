@@ -10,6 +10,26 @@ import UIKit
 
 class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate {
 	
+	fileprivate lazy var animator: UIDynamicAnimator = {
+		let animator = UIDynamicAnimator(referenceView: self)
+		animator.delegate = self
+
+//		// create a behavior with an action to detect when any ball is off the screen
+//		let behavior = UIDynamicBehavior()
+//		behavior.action = {
+//			// check to see if any ball is off the screen
+//			for ball in self.balls {
+//				if !self.frame.intersects(ball.frame) {
+//					// this ball is out of bounds
+//					self.gameOver(didWin: false)
+//				}
+//			}
+//		}
+//		animator.addBehavior(behavior)
+
+		return animator
+	}()
+	
 	// MARK: - Game Control
 	
 	func startNewGame()
@@ -33,6 +53,18 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		
 		removeBalls()
 	}
+	
+	fileprivate func gameOver(didWin: Bool)
+	{
+		animating = false
+//		if let myWindow = window {
+//			if let myVC = myWindow.rootViewController as? BreakoutViewController {
+//				myVC.startStopButton.title = "Start"
+//			}
+//		}
+	}
+	
+	// Interface for setting game parameters
 	
 	func setGravityMagnitude(_ mag: CGFloat)
 	{
@@ -59,7 +91,11 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	func collisionBehavior(_ behavior: UICollisionBehavior, endedContactFor item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying?) {
 		if let boundaryId = identifier as? String {
 			
-			if boundaryId != PathNames.gameBarrier && boundaryId != PathNames.paddleBarrier {
+			if boundaryId == PathNames.floorBarrier {
+				gameOver(didWin: false)
+			}
+			
+			else if boundaryId != PathNames.gameBarrier && boundaryId != PathNames.paddleBarrier {
 				// must be a brick, remove its barrier
 				ballBehavior.removeBarrier(named: boundaryId)
 				
@@ -78,24 +114,6 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		}
 	}
 	
-	// MARK: - Private Implementation
-	
-	fileprivate func gameOver(didWin: Bool)
-	{
-		animating = false
-		if let myWindow = window {
-			if let myVC = myWindow.rootViewController as? BreakoutViewController {
-				myVC.startStopButton.title = "Start"
-			}
-		}
-	}
-	
-	fileprivate lazy var animator: UIDynamicAnimator = {
-		let animator = UIDynamicAnimator(referenceView: self)
-		animator.delegate = self
-		return animator
-	}()
-	
 	func pushBalls(_ recognizor: UITapGestureRecognizer) {
 		if recognizor.state == .ended {
 			for ball in balls {
@@ -108,10 +126,13 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		}
 	}
 	
-	// MARK: Game Collision Boundary
+	// MARK: - Game Collision Boundaries
 	
 	fileprivate func addGameBoundaries()
 	{
+		// the game play boundaries...
+		
+		let thick: CGFloat = 10
 		let gamePath = UIBezierPath()
 		gamePath.lineWidth = 4.0
 		gamePath.move(to: CGPoint(x: 0, y: bounds.height))
@@ -119,20 +140,27 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		gamePath.addLine(to: CGPoint(x: bounds.width, y: 0))
 		gamePath.addLine(to: CGPoint(x: bounds.width, y: bounds.height))
 		
-		// The above path will be closed automatically,
-		// so the following are needed to keep the bottom edge from being included.
-		// Comment out these lines to include the bottom.
-		//		gamePath.addLine(to: CGPoint(x: bounds.width, y: 0))
-		//		gamePath.addLine(to: CGPoint.zero)
+		gamePath.addLine(to: CGPoint(x: bounds.width + thick, y: bounds.height))
+		gamePath.addLine(to: CGPoint(x: bounds.width + thick, y: -thick))
+		gamePath.addLine(to: CGPoint(x: -thick, y: -thick))
+		gamePath.addLine(to: CGPoint(x: -thick, y: bounds.height))
 		
 		ballBehavior.addBarrier(gamePath, named: PathNames.gameBarrier)
 		bezierPaths[PathNames.gameBarrier] = gamePath
+		
+		// The floor boundary...
+		let floorPath = UIBezierPath(rect: CGRect(x: 0, y: bounds.height, width: bounds.width, height: 10))
+		ballBehavior.addBarrier(floorPath, named: PathNames.floorBarrier)
+		bezierPaths[PathNames.floorBarrier] = floorPath
 	}
 	
 	fileprivate struct PathNames {
 		static let gameBarrier = "Game Barrier"
 		static let paddleBarrier = "Paddle Barrier"
+		static let floorBarrier = "Floor Barrier"
 	}
+	
+	// MARK: - UIView delegate
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -161,7 +189,7 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		
 		// put the balls vertically between the bottom of the bricks and the paddle
 		let bottomOfBricks = brickSize.height * CGFloat(Settings.sharedInstance.numberOfRows) + brickSize.height
-		frame.origin.y = paddle.frame.origin.y - bottomOfBricks - ballSize.height/2
+		frame.origin.y = bottomOfBricks + brickSize.height
 		
 		// place each ball in a random location within a separate horizontal span
 		let numBalls = Settings.sharedInstance.numberOfBalls
@@ -198,7 +226,7 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	// MARK: - The Paddle
 	
 	fileprivate var paddleSize: CGSize {
-		return CGSize(width: brickSize.width * 1.5, height: brickSize.height)
+		return CGSize(width: brickSize.width * 1.5, height: brickSize.height/2)
 	}
 	
 	fileprivate lazy var paddle: UIView = {
@@ -288,14 +316,16 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		for brick in bricks {
 			
 			// remove the collision barrier for this brick
-//			let row = b / BricksConstants.bricksPerRow
-//			let column = b - (row * BricksConstants.bricksPerRow)
-			ballBehavior.removeBarrier(named: "\(brick)")
+			ballBehavior.removeBarrier(named: "\(brick.key)")
 			
-			bricks[b]?.removeFromSuperview()
+			if let brickView = bricks[b] as UIView? {
+				brickView.removeFromSuperview()
+			}
+			
 
 			b += 1
 		}
+		print("Subviews = \(self.subviews)")
 		bricks.removeAll()
 	}
 	
