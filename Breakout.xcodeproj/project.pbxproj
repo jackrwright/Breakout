@@ -10,6 +10,7 @@
 		213604D31DE0EA6600ACF841 /* UIKit Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213604D21DE0EA6600ACF841 /* UIKit Extensions.swift */; };
 		213604DB1DE205B100ACF841 /* BallBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213604DA1DE205B100ACF841 /* BallBehavior.swift */; };
 		213604DF1DE2203000ACF841 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213604DE1DE2203000ACF841 /* Settings.swift */; };
+		213604E41DE4E39A00ACF841 /* NamedBezierPathsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213604E31DE4E39A00ACF841 /* NamedBezierPathsView.swift */; };
 		21E5808A1DE0A2FB007DC07B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E580891DE0A2FB007DC07B /* AppDelegate.swift */; };
 		21E5808F1DE0A2FB007DC07B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21E5808D1DE0A2FB007DC07B /* Main.storyboard */; };
 		21E580911DE0A2FB007DC07B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E580901DE0A2FB007DC07B /* Assets.xcassets */; };
@@ -23,6 +24,7 @@
 		213604D21DE0EA6600ACF841 /* UIKit Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit Extensions.swift"; sourceTree = "<group>"; };
 		213604DA1DE205B100ACF841 /* BallBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallBehavior.swift; sourceTree = "<group>"; };
 		213604DE1DE2203000ACF841 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		213604E31DE4E39A00ACF841 /* NamedBezierPathsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedBezierPathsView.swift; sourceTree = "<group>"; };
 		21E580861DE0A2FB007DC07B /* Breakout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E580891DE0A2FB007DC07B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		21E5808E1DE0A2FB007DC07B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 				21E5808D1DE0A2FB007DC07B /* Main.storyboard */,
 				213604E01DE2269000ACF841 /* Settings */,
 				213604D21DE0EA6600ACF841 /* UIKit Extensions.swift */,
+				213604E31DE4E39A00ACF841 /* NamedBezierPathsView.swift */,
 				21E5809B1DE0A345007DC07B /* Supporting Files */,
 				21E580901DE0A2FB007DC07B /* Assets.xcassets */,
 			);
@@ -174,6 +177,7 @@
 				21E5808A1DE0A2FB007DC07B /* AppDelegate.swift in Sources */,
 				213604DF1DE2203000ACF841 /* Settings.swift in Sources */,
 				21E5809D1DE0A38B007DC07B /* BreakoutViewController.swift in Sources */,
+				213604E41DE4E39A00ACF841 /* NamedBezierPathsView.swift in Sources */,
 				21E580A11DE0A553007DC07B /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

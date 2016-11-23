@@ -10,11 +10,53 @@ import UIKit
 
 class BreakoutViewController: UIViewController
 {
+	@IBOutlet var gameView: BreakoutView! {
+		didSet {
+			gameView.addGestureRecognizer(UIPanGestureRecognizer(target: gameView, action: #selector(BreakoutView.movePaddle(_:))))
+			
+			gameView.addGestureRecognizer(UITapGestureRecognizer(target: gameView, action: #selector(BreakoutView.pushBalls(_:))))
+		}
+	}
+	
+	@IBAction func startStopButtonPressed(_ sender: UIBarButtonItem) {
+		gameInProgress = !gameInProgress
+	}
+	
+	@IBOutlet weak var startStopButton: UIBarButtonItem!
+
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 	}
 	
-	fileprivate var gameInProgress: Bool = false {
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		if Settings.sharedInstance.gravityIsOn {
+			gameView.setGravityMagnitude(CGFloat(Settings.sharedInstance.gravity))
+		} else {
+			gameView.setGravityMagnitude(0)
+		}
+		
+		gameView.setBallBounciness(CGFloat(Settings.sharedInstance.ballBounciness))
+		
+		gameView.animating = true
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		gameView.animating = false
+	}
+	
+	func setGravityMagnitude(_ mag: CGFloat)
+	{
+		gameView.setGravityMagnitude(mag)
+	}
+	
+	// MARK: - Private
+	
+	var gameInProgress: Bool = false {
 		didSet {
 			if gameInProgress {
 				startStopButton?.title = "Stop"
@@ -53,15 +95,4 @@ class BreakoutViewController: UIViewController
 	}
 	
 
-	@IBOutlet var gameView: BreakoutView! {
-		didSet {
-			
-		}
-	}
-	
-	@IBAction func startStopButtonPressed(_ sender: UIBarButtonItem) {
-		gameInProgress = !gameInProgress
-	}
-	
-	@IBOutlet weak var startStopButton: UIBarButtonItem!
 }
