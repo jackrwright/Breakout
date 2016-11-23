@@ -58,31 +58,31 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	
 	func collisionBehavior(_ behavior: UICollisionBehavior, endedContactFor item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying?) {
 		if let boundaryId = identifier as? String {
+			
 			if boundaryId != PathNames.gameBarrier && boundaryId != PathNames.paddleBarrier {
 				// must be a brick, remove its barrier
 				ballBehavior.removeBarrier(named: boundaryId)
 				
 				// remove its view
 				if let index = Int(boundaryId) {
-					bricks[index].removeFromSuperview()
-
-					// remove the brick from the bricks array
-//					bricks.remove(at: index)
+					bricks[index]?.removeFromSuperview()
+					
+					// remove the brick from the bricks dictionary
+					bricks[index] = nil
+					
+					if bricks.count <= 0 {
+						gameOver(didWin: true)
+					}
 				}
-				
-				
-				
-//				if let theItem = item as? UIView {
-//					theItem.removeFromSuperview()
-//				}
 			}
 		}
 	}
 	
 	// MARK: - Private Implementation
 	
-	fileprivate func gameOver()
+	fileprivate func gameOver(didWin: Bool)
 	{
+		animating = false
 		if let myWindow = window {
 			if let myVC = myWindow.rootViewController as? BreakoutViewController {
 				myVC.startStopButton.title = "Start"
@@ -99,7 +99,7 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	func pushBalls(_ recognizor: UITapGestureRecognizer) {
 		if recognizor.state == .ended {
 			for ball in balls {
-				let speed = CGFloat.random(500)
+				let speed = CGFloat(300)
 				let x = (CGFloat.random(2) - 0.5) * speed
 				let y = (CGFloat.random(2) - 0.5) * speed
 				ballBehavior.itemBehavior.addLinearVelocity(CGPoint(x: 0, y: 0), for: ball)
@@ -250,21 +250,11 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	
 	// MARK: - The Bricks
 	
-	fileprivate var bricks = [UIView]()
+	fileprivate var bricks = [Int:UIView]()
 	
 	fileprivate var brickSize: CGSize {
 		let width = bounds.size.width / CGFloat(BricksConstants.bricksPerRow) - CGFloat(BricksConstants.margin) * 2
 		return CGSize(width: width, height: width / 2)
-	}
-	
-	fileprivate func addBrickWithFrame(_ frame:CGRect)
-	{
-		let brick = UIView(frame: frame)
-		brick.backgroundColor = UIColor.random
-		
-		bricks.append(brick)
-		
-		addSubview(brick)
 	}
 	
 	fileprivate func addBricks()
@@ -276,9 +266,15 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 			frame.origin.y = CGFloat(r) * (brickSize.height + margin * 2) + margin
 			for b in 0..<BricksConstants.bricksPerRow {
 				frame.origin.x = CGFloat(b) * (brickSize.width + margin * 2) + margin
-				addBrickWithFrame(frame)
+
+				let brick = UIView(frame: frame)
+				brick.backgroundColor = UIColor.random
 				
-				// add a collision barrier with "<row>,<column>" coordinate as the name
+				bricks[brickIndex] = brick
+				
+				addSubview(brick)
+
+				// add a collision barrier with the brick index as the name
 				ballBehavior.addBarrier(UIBezierPath(rect: frame), named: "\(brickIndex)")
 				
 				brickIndex += 1
@@ -292,11 +288,11 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		for brick in bricks {
 			
 			// remove the collision barrier for this brick
-			let row = b / BricksConstants.bricksPerRow
-			let column = b - (row * BricksConstants.bricksPerRow)
-			ballBehavior.removeBarrier(named: "\(row),\(column)")
+//			let row = b / BricksConstants.bricksPerRow
+//			let column = b - (row * BricksConstants.bricksPerRow)
+			ballBehavior.removeBarrier(named: "\(brick)")
 			
-			brick.removeFromSuperview()
+			bricks[b]?.removeFromSuperview()
 
 			b += 1
 		}
