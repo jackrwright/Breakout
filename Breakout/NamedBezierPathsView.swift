@@ -13,9 +13,11 @@ class NamedBezierPathsView: UIView
     var bezierPaths = [String:UIBezierPath]() { didSet { setNeedsDisplay() } }
     
     override func draw(_ rect: CGRect) {
-		UIColor.purple.setStroke()
+//		UIColor.white.setStroke()
+		UIColor.white.setFill()
         for (_, path) in bezierPaths {
-            path.stroke()
+//            path.stroke()
+			path.fill()
         }
     }
 }

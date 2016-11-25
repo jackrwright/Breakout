@@ -289,25 +289,24 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		return paddle
 	}()
 	
-//	fileprivate lazy var paddle = UIView(frame: CGRect(center: CGPoint(x: 0, y:self.bounds.center.y), size: self.paddleSize))
-	
 	fileprivate func addPaddleBarrier()
 	{
 		// create a collision boundary for the paddle with its current frame
-		let path = UIBezierPath(rect: paddle.frame)
+		let path = UIBezierPath(ovalIn: paddle.frame)
 		ballBehavior.addBarrier(path, named: PathNames.paddleBarrier)
+		bezierPaths[PathNames.paddleBarrier] = path
 	}
 	
 	fileprivate func addPaddle()
 	{
-		let paddleSize = CGSize(width: 1.5 * (CGFloat(Settings.sharedInstance.numberOfBalls) * brickSize.width), height: brickSize.height/2)
+		let paddleSize = CGSize(width: 1.5 * (CGFloat(Settings.sharedInstance.numberOfBalls) * brickSize.width), height: brickSize.height)
 		
 		var frame = CGRect(origin: CGPoint.zero, size: paddleSize)
 		frame.origin.x = self.bounds.width / 2 - paddleSize.width / 2
-		frame.origin.y = self.bounds.height - paddleSize.height * 2
+		frame.origin.y = self.bounds.height - paddleSize.height * 3
 
 		paddle = UIView(frame: frame)
-		paddle.backgroundColor = UIColor.white
+		paddle.backgroundColor = UIColor.clear
 		
 		addPaddleBarrier()
 		
@@ -364,6 +363,7 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 
 				// add a collision barrier with the brick index as the name
 				ballBehavior.addBarrier(UIBezierPath(rect: frame), named: "\(brickIndex)")
+//				bezierPaths["\(brickIndex)"] = UIBezierPath(rect: frame)
 				
 				brickIndex += 1
 			}

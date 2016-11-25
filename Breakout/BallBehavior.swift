@@ -26,13 +26,6 @@ class BallBehavior: UIDynamicBehavior
 		return dib
 	}()
 	
-//	var pushBehavior: UIPushBehavior = {
-//		let pb = UIPushBehavior()
-//		pb.magnitude = 1.0
-//		pb.active = false
-//		return pb
-//	}()
-	
 	var collider: UICollisionBehavior = {
 		let collider = UICollisionBehavior()
 //		collider.translatesReferenceBoundsIntoBoundary = true
@@ -53,20 +46,17 @@ class BallBehavior: UIDynamicBehavior
 		addChildBehavior(gravity)
 		addChildBehavior(collider)
 		addChildBehavior(itemBehavior)
-//		addChildBehavior(pushBehavior)
 	}
 	
 	func addItem(_ item: UIDynamicItem) {
 		gravity.addItem(item)
 		collider.addItem(item)
 		itemBehavior.addItem(item)
-//		pushBehavior.addItem(item)
 	}
 	
 	func removeItem(_ item: UIDynamicItem) {
 		gravity.removeItem(item)
 		collider.removeItem(item)
 		itemBehavior.removeItem(item)
-//		pushBehavior.removeItem(item)
 	}
 }
