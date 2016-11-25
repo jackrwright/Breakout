@@ -14,18 +14,18 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		let animator = UIDynamicAnimator(referenceView: self)
 		animator.delegate = self
 
-//		// create a behavior with an action to detect when any ball is off the screen
-//		let behavior = UIDynamicBehavior()
-//		behavior.action = {
-//			// check to see if any ball is off the screen
-//			for ball in self.balls {
-//				if !self.frame.intersects(ball.frame) {
-//					// this ball is out of bounds
-//					self.gameOver(didWin: false)
-//				}
-//			}
-//		}
-//		animator.addBehavior(behavior)
+		// create a behavior with an action to detect when any ball is off the screen
+		let behavior = UIDynamicBehavior()
+		behavior.action = {
+			// check to see if any ball is off the screen
+			for ball in self.balls {
+				if !self.bounds.intersects(ball.frame) {
+					// this ball is out of bounds
+					self.gameOver(didWin: false)
+				}
+			}
+		}
+		animator.addBehavior(behavior)
 
 		return animator
 	}()
@@ -47,16 +47,18 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	{
 		animating = false
 		
-		removeBricks()
-		
+		removeBalls()
+
 		removePaddle()
 		
-		removeBalls()
+		removeBricks()
 	}
 	
 	fileprivate func gameOver(didWin: Bool)
 	{
 		animating = false
+		
+		print("Game Over - You \(didWin ? "WIN" : "LOSE")!")
 //		if let myWindow = window {
 //			if let myVC = myWindow.rootViewController as? BreakoutViewController {
 //				myVC.startStopButton.title = "Start"
@@ -114,15 +116,24 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		}
 	}
 	
+	// MARK: - Push Behavior
+	
+	fileprivate var push: UIPushBehavior? {
+		didSet {
+			if push != nil {
+				push!.magnitude = ballSize.width * 0.01
+				push!.angle = CGFloat.random(M_PI)
+				push!.action = { [unowned self] in
+					self.animator.removeBehavior(self.push!)
+				}
+				animator.addBehavior(push!)
+			}
+		}
+	}
+	
 	func pushBalls(_ recognizor: UITapGestureRecognizer) {
 		if recognizor.state == .ended {
-			for ball in balls {
-				let speed = CGFloat(300)
-				let x = (CGFloat.random(2) - 0.5) * speed
-				let y = (CGFloat.random(2) - 0.5) * speed
-				ballBehavior.itemBehavior.addLinearVelocity(CGPoint(x: 0, y: 0), for: ball)
-				ballBehavior.itemBehavior.addLinearVelocity(CGPoint(x: x, y: y), for: ball)
-			}
+			push = UIPushBehavior(items: balls, mode: UIPushBehaviorMode.instantaneous)
 		}
 	}
 	
@@ -148,10 +159,10 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		ballBehavior.addBarrier(gamePath, named: PathNames.gameBarrier)
 		bezierPaths[PathNames.gameBarrier] = gamePath
 		
-		// The floor boundary...
-		let floorPath = UIBezierPath(rect: CGRect(x: 0, y: bounds.height, width: bounds.width, height: 10))
-		ballBehavior.addBarrier(floorPath, named: PathNames.floorBarrier)
-		bezierPaths[PathNames.floorBarrier] = floorPath
+//		// The floor boundary...
+//		let floorPath = UIBezierPath(rect: CGRect(x: 0, y: bounds.height, width: bounds.width, height: 10))
+//		ballBehavior.addBarrier(floorPath, named: PathNames.floorBarrier)
+//		bezierPaths[PathNames.floorBarrier] = floorPath
 	}
 	
 	fileprivate struct PathNames {
@@ -187,15 +198,18 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	{
 		var frame = CGRect(origin: CGPoint.zero, size: ballSize)
 		
-		// put the balls vertically between the bottom of the bricks and the paddle
-		let bottomOfBricks = brickSize.height * CGFloat(Settings.sharedInstance.numberOfRows) + brickSize.height
-		frame.origin.y = bottomOfBricks + brickSize.height
+//		// put the balls vertically between the bottom of the bricks and the paddle
+//		let bottomOfBricks = brickSize.height * CGFloat(Settings.sharedInstance.numberOfRows) + brickSize.height
+//		frame.origin.y = bottomOfBricks + brickSize.height
+		
+		// positions the balls just above the paddle so the push will bounce off the paddle if it head downward
+		frame.origin.y = paddle.frame.origin.y - ballSize.height * 1.5
 		
 		// place each ball in a random location within a separate horizontal span
 		let numBalls = Settings.sharedInstance.numberOfBalls
-		let spanWidth = Int(bounds.width / CGFloat(numBalls))
+		let spanWidth = Int(paddle.frame.width / CGFloat(numBalls))
 		for b in 0..<numBalls {
-			frame.origin.x = CGFloat(b * spanWidth) + CGFloat.random(spanWidth - (Int)(ballSize.width))
+			frame.origin.x = CGFloat(b * spanWidth) + CGFloat.random(spanWidth - (Int)(ballSize.width)) + paddle.frame.origin.x
 			
 			let ball = UIView(frame: frame)
 			ball.layer.cornerRadius = brickSize.width / 4	// make it a circle
@@ -206,11 +220,16 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 			
 			ballBehavior.addItem(ball)
 
-			// give the ball an initial velocity towards the bottom of the screen
-			let speed: CGFloat = 300	// points/second
-			let x = speed * (CGFloat.random(Int(bounds.width)) / bounds.width)
-			let y = speed
-			ballBehavior.itemBehavior.addLinearVelocity(CGPoint(x: x, y: y), for: ball)
+			// Add this ball to the push beahavior so we can push it
+//			ballBehavior.pushBehavior.addItem(ball)
+			
+//			print(ballBehavior.pushBehavior)
+			
+//			// give the ball an initial velocity towards the bottom of the screen
+//			let speed: CGFloat = 300	// points/second
+//			let x = speed * (CGFloat.random(Int(bounds.width)) / bounds.width)
+//			let y = speed
+//			ballBehavior.itemBehavior.addLinearVelocity(CGPoint(x: x, y: y), for: ball)
 		}
 	}
 	
@@ -226,10 +245,12 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	// MARK: - The Paddle
 	
 	fileprivate var paddleSize: CGSize {
-		return CGSize(width: brickSize.width * 1.5, height: brickSize.height/2)
+		// The size of the paddle depends on the number of balls, so the balls should be created first
+		return CGSize(width: (CGFloat(Settings.sharedInstance.numberOfBalls) * brickSize.width), height: brickSize.height/2)
 	}
 	
 	fileprivate lazy var paddle: UIView = {
+		
 		var frame = CGRect(origin: CGPoint.zero, size: self.paddleSize)
 		frame.origin.x = self.bounds.width / 2 - self.paddleSize.width / 2
 		frame.origin.y = self.bounds.height - self.paddleSize.height * 2
@@ -240,6 +261,8 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		return paddle
 	}()
 	
+//	fileprivate lazy var paddle = UIView(frame: CGRect(center: CGPoint(x: 0, y:self.bounds.center.y), size: self.paddleSize))
+	
 	fileprivate func addPaddleBarrier()
 	{
 		// create a collision boundary for the paddle with its current frame
@@ -249,6 +272,15 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	
 	fileprivate func addPaddle()
 	{
+		let paddleSize = CGSize(width: 1.5 * (CGFloat(Settings.sharedInstance.numberOfBalls) * brickSize.width), height: brickSize.height/2)
+		
+		var frame = CGRect(origin: CGPoint.zero, size: paddleSize)
+		frame.origin.x = self.bounds.width / 2 - paddleSize.width / 2
+		frame.origin.y = self.bounds.height - paddleSize.height * 2
+
+		paddle = UIView(frame: frame)
+		paddle.backgroundColor = UIColor.white
+		
 		addPaddleBarrier()
 		
 		addSubview(paddle)
@@ -281,18 +313,18 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	fileprivate var bricks = [Int:UIView]()
 	
 	fileprivate var brickSize: CGSize {
-		let width = bounds.size.width / CGFloat(BricksConstants.bricksPerRow) - CGFloat(BricksConstants.margin) * 2
+		let width = bounds.size.width / CGFloat(GameConstants.bricksPerRow) - CGFloat(GameConstants.margin) * 2
 		return CGSize(width: width, height: width / 2)
 	}
 	
 	fileprivate func addBricks()
 	{
-		let margin = CGFloat(BricksConstants.margin)
+		let margin = CGFloat(GameConstants.margin)
 		var frame = CGRect(origin: CGPoint.zero, size: brickSize)
 		var brickIndex = 0
 		for r in 0..<Settings.sharedInstance.numberOfRows {
 			frame.origin.y = CGFloat(r) * (brickSize.height + margin * 2) + margin
-			for b in 0..<BricksConstants.bricksPerRow {
+			for b in 0..<GameConstants.bricksPerRow {
 				frame.origin.x = CGFloat(b) * (brickSize.width + margin * 2) + margin
 
 				let brick = UIView(frame: frame)
@@ -312,20 +344,14 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	
 	fileprivate func removeBricks()
 	{
-		var b = 0
 		for brick in bricks {
 			
 			// remove the collision barrier for this brick
 			ballBehavior.removeBarrier(named: "\(brick.key)")
 			
-			if let brickView = bricks[b] as UIView? {
-				brickView.removeFromSuperview()
-			}
-			
-
-			b += 1
+			brick.value.removeFromSuperview()
 		}
-		print("Subviews = \(self.subviews)")
+//		print("Subviews = \(self.subviews)")
 		bricks.removeAll()
 	}
 	

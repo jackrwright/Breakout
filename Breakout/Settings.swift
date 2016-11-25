@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct BricksConstants {
+struct GameConstants {
 	static let bricksPerRow = 6
 	static let minRows = 1
 	static let maxRows = 6
@@ -52,7 +52,7 @@ class Settings: NSObject {
 		}
 	}
 	
-	var numberOfBricks: Int {return _numberOfRows * BricksConstants.bricksPerRow}
+	var numberOfBricks: Int {return _numberOfRows * GameConstants.bricksPerRow}
 	
 	var ballBounciness: Double {
 		get {
@@ -114,7 +114,7 @@ class Settings: NSObject {
 //	}
 	
 	fileprivate struct Defaults {
-		static let numRows = BricksConstants.initialRows
+		static let numRows = GameConstants.initialRows
 		static let numBalls = 1
 		static let ballBounciness = 0.5
 		static let gravityIsOn  = false

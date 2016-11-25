@@ -15,21 +15,21 @@ class SettingsViewController: UITableViewController
 	
 	@IBOutlet fileprivate weak var bricksCountStepper: UIStepper! {
 		didSet {
-			bricksCountStepper.minimumValue = Double(BricksConstants.minRows * BricksConstants.bricksPerRow)
-			bricksCountStepper.maximumValue = Double(BricksConstants.maxRows * BricksConstants.bricksPerRow)
-			bricksCountStepper.stepValue = Double(BricksConstants.bricksPerRow)
-			bricksCountStepper.value = Double(settings.numberOfRows * BricksConstants.bricksPerRow)
+			bricksCountStepper.minimumValue = Double(GameConstants.minRows * GameConstants.bricksPerRow)
+			bricksCountStepper.maximumValue = Double(GameConstants.maxRows * GameConstants.bricksPerRow)
+			bricksCountStepper.stepValue = Double(GameConstants.bricksPerRow)
+			bricksCountStepper.value = Double(settings.numberOfRows * GameConstants.bricksPerRow)
 		}
 	}
 	
 	@IBAction private func bricksCountChanged(_ sender: UIStepper) {
-		settings.numberOfRows = (Int)(sender.value) / BricksConstants.bricksPerRow
-		bricksCountLabel.text = "\(settings.numberOfRows * BricksConstants.bricksPerRow)"
+		settings.numberOfRows = (Int)(sender.value) / GameConstants.bricksPerRow
+		bricksCountLabel.text = "\(settings.numberOfRows * GameConstants.bricksPerRow)"
 	}
 	
 	@IBOutlet private weak var bricksCountLabel: UILabel! {
 		didSet {
-			bricksCountLabel.text = "\(settings.numberOfRows * BricksConstants.bricksPerRow)"
+			bricksCountLabel.text = "\(settings.numberOfRows * GameConstants.bricksPerRow)"
 		}
 	}
 	
