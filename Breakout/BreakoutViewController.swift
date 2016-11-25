@@ -40,13 +40,13 @@ class BreakoutViewController: UIViewController
 		
 		gameView.setBallBounciness(CGFloat(Settings.sharedInstance.ballBounciness))
 		
-		gameView.animating = true
+		gameView.resumeGame()
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
-		gameView.animating = false
+		gameView.pauseGame()
 	}
 	
 	func setGravityMagnitude(_ mag: CGFloat)

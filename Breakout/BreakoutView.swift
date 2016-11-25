@@ -10,6 +10,25 @@ import UIKit
 
 class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate {
 	
+	enum GameState {
+		case stopped
+		case running
+		case paused
+	}
+	
+	fileprivate var gameState = GameState.stopped {
+		didSet {
+			switch gameState {
+			case .stopped:
+				animating = false
+			case .paused:
+				animating = false
+			case .running:
+				animating = true
+			}
+		}
+	}
+	
 	fileprivate lazy var animator: UIDynamicAnimator = {
 		let animator = UIDynamicAnimator(referenceView: self)
 		animator.delegate = self
@@ -40,12 +59,12 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		
 		addBalls()
 		
-		animating = true
+		gameState = .running
 	}
 	
 	func stopGame()
 	{
-		animating = false
+		gameState = GameState.stopped
 		
 		removeBalls()
 
@@ -54,16 +73,29 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		removeBricks()
 	}
 	
+	func pauseGame()
+	{
+		gameState = .paused
+	}
+	
+	func resumeGame()
+	{
+		if gameState == .paused {
+			gameState = .running
+		}
+	}
+	
 	fileprivate func gameOver(didWin: Bool)
 	{
-		animating = false
-		
-		print("Game Over - You \(didWin ? "WIN" : "LOSE")!")
+		if gameState != .stopped {
+			print("Game Over - You \(didWin ? "WIN" : "LOSE")!")
+		}
 //		if let myWindow = window {
 //			if let myVC = myWindow.rootViewController as? BreakoutViewController {
 //				myVC.startStopButton.title = "Start"
 //			}
 //		}
+		gameState = .stopped
 	}
 	
 	// Interface for setting game parameters
@@ -198,12 +230,8 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	{
 		var frame = CGRect(origin: CGPoint.zero, size: ballSize)
 		
-//		// put the balls vertically between the bottom of the bricks and the paddle
-//		let bottomOfBricks = brickSize.height * CGFloat(Settings.sharedInstance.numberOfRows) + brickSize.height
-//		frame.origin.y = bottomOfBricks + brickSize.height
-		
 		// positions the balls just above the paddle so the push will bounce off the paddle if it head downward
-		frame.origin.y = paddle.frame.origin.y - ballSize.height * 1.5
+		frame.origin.y = paddle.frame.origin.y - ballSize.height - 0.1
 		
 		// place each ball in a random location within a separate horizontal span
 		let numBalls = Settings.sharedInstance.numberOfBalls
