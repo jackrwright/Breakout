@@ -8,9 +8,15 @@
 
 import UIKit
 
-class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate {
+protocol BreakoutGame {
+	func gameOver(didWin: Bool)
+}
+
+class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate
+{
+	var delegate: BreakoutGame?
 	
-	enum GameState {
+	fileprivate enum GameState {
 		case stopped
 		case running
 		case paused
@@ -29,25 +35,43 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		}
 	}
 	
-	fileprivate lazy var animator: UIDynamicAnimator = {
-		let animator = UIDynamicAnimator(referenceView: self)
-		animator.delegate = self
-
-		// create a behavior with an action to detect when any ball is off the screen
+	// create a behavior with an action to detect when any ball is off the screen
+	fileprivate lazy var boundsBehavior: UIDynamicBehavior = {
 		let behavior = UIDynamicBehavior()
 		behavior.action = {
 			// check to see if any ball is off the screen
 			for ball in self.balls {
+				// limit the ball speed
+				
 				if !self.bounds.intersects(ball.frame) {
 					// this ball is out of bounds
 					self.gameOver(didWin: false)
+					break
 				}
 			}
 		}
-		animator.addBehavior(behavior)
+		return behavior
+	}()
+	
+	fileprivate lazy var animator: UIDynamicAnimator = {
+		let animator = UIDynamicAnimator(referenceView: self)
+		animator.delegate = self
+
 
 		return animator
 	}()
+	
+	fileprivate var animating: Bool = false {
+		didSet {
+			if animating {
+				animator.addBehavior(ballBehavior)
+				animator.addBehavior(boundsBehavior)
+			} else {
+				animator.removeBehavior(ballBehavior)
+				animator.removeBehavior(boundsBehavior)
+			}
+		}
+	}
 	
 	// MARK: - Game Control
 	
@@ -81,24 +105,20 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	func resumeGame()
 	{
 		if gameState == .paused {
+			// restore balls to their velocity before they were paused
 			gameState = .running
 		}
 	}
 	
 	fileprivate func gameOver(didWin: Bool)
 	{
-		if gameState != .stopped {
-			print("Game Over - You \(didWin ? "WIN" : "LOSE")!")
-		}
-//		if let myWindow = window {
-//			if let myVC = myWindow.rootViewController as? BreakoutViewController {
-//				myVC.startStopButton.title = "Start"
-//			}
-//		}
 		gameState = .stopped
+		
+		// tell the controller
+		delegate?.gameOver(didWin: didWin)
 	}
 	
-	// Interface for setting game parameters
+	// MARK: - Interface for setting game parameters
 	
 	func setGravityMagnitude(_ mag: CGFloat)
 	{
@@ -108,16 +128,6 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	func setBallBounciness(_ bounce: CGFloat)
 	{
 		ballBehavior.itemBehavior.elasticity = bounce
-	}
-	
-	var animating: Bool = false {
-		didSet {
-			if animating {
-				animator.addBehavior(ballBehavior)
-			} else {
-				animator.removeBehavior(ballBehavior)
-			}
-		}
 	}
 	
 	// MARK: - CollisionBehaviorDelegate
@@ -135,7 +145,18 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 				
 				// remove its view
 				if let index = Int(boundaryId) {
-					bricks[index]?.removeFromSuperview()
+					
+					// Create an animation for removing the brick
+					let max = CGFloat.random(Int(self.bounds.width))
+					UIView.animate(withDuration: 0.5, animations: {
+						if let brick = self.bricks[index] {
+							brick.alpha = 0
+							brick.frame.origin = CGPoint(x: max, y: -self.brickSize.height)
+							brick.transform = CGAffineTransform(rotationAngle: CGFloat.random(M_PI) * CGFloat.randomSign())
+						}
+					}, completion: { (completed) in
+						self.bricks[index]?.removeFromSuperview()
+					})
 					
 					// remove the brick from the bricks dictionary
 					bricks[index] = nil
@@ -230,7 +251,7 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 	{
 		var frame = CGRect(origin: CGPoint.zero, size: ballSize)
 		
-		// positions the balls just above the paddle so the push will bounce off the paddle if it head downward
+		// positions the balls just above the paddle so the push will bounce off the paddle if headed downward
 		frame.origin.y = paddle.frame.origin.y - ballSize.height - 0.1
 		
 		// place each ball in a random location within a separate horizontal span
@@ -247,17 +268,6 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 			addSubview(ball)
 			
 			ballBehavior.addItem(ball)
-
-			// Add this ball to the push beahavior so we can push it
-//			ballBehavior.pushBehavior.addItem(ball)
-			
-//			print(ballBehavior.pushBehavior)
-			
-//			// give the ball an initial velocity towards the bottom of the screen
-//			let speed: CGFloat = 300	// points/second
-//			let x = speed * (CGFloat.random(Int(bounds.width)) / bounds.width)
-//			let y = speed
-//			ballBehavior.itemBehavior.addLinearVelocity(CGPoint(x: x, y: y), for: ball)
 		}
 	}
 	

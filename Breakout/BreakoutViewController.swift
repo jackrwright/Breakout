@@ -8,10 +8,11 @@
 
 import UIKit
 
-class BreakoutViewController: UIViewController
+class BreakoutViewController: UIViewController, BreakoutGame
 {
 	@IBOutlet var gameView: BreakoutView! {
 		didSet {
+				gameView.delegate = self
 			gameView.addGestureRecognizer(UIPanGestureRecognizer(target: gameView, action: #selector(BreakoutView.movePaddle(_:))))
 			
 			gameView.addGestureRecognizer(UITapGestureRecognizer(target: gameView, action: #selector(BreakoutView.pushBalls(_:))))
@@ -69,20 +70,24 @@ class BreakoutViewController: UIViewController
 		}
 	}
 	
-	fileprivate func newGameAlert()
+	func gameOver(didWin: Bool)
 	{
-		let alertController = UIAlertController(title: "Start a New Game", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+		let title = "Game Over"
+		let msg = "You \(didWin ? "WIN" : "LOSE")!"
+//		print("\(title) - \(msg)")
 		
+		let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
 		
-		let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
-			// start a new game
-			self.startNewGame()
-		}
+		let newGameAction = UIAlertAction(title: "New Game", style: .default, handler: { (action) in
+			
+			self.gameView.stopGame()
+			self.gameView.startNewGame()
+		})
 		
-		alertController.addAction(okAction)
+		alert.addAction(newGameAction)
 		
-		present(alertController, animated: true, completion: nil)
-		
+		present(alert, animated: true, completion: nil)
+
 	}
 	
 	fileprivate func startNewGame()
