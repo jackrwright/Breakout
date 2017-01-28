@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// This class will draw all bezier paths added to its **bezierPaths** array. Handy for debugging paths.
 class NamedBezierPathsView: UIView
 {
     var bezierPaths = [String:UIBezierPath]() { didSet { setNeedsDisplay() } }

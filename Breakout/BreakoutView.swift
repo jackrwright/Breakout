@@ -212,10 +212,6 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		ballBehavior.addBarrier(gamePath, named: PathNames.gameBarrier)
 		bezierPaths[PathNames.gameBarrier] = gamePath
 		
-//		// The floor boundary...
-//		let floorPath = UIBezierPath(rect: CGRect(x: 0, y: bounds.height, width: bounds.width, height: 10))
-//		ballBehavior.addBarrier(floorPath, named: PathNames.floorBarrier)
-//		bezierPaths[PathNames.floorBarrier] = floorPath
 	}
 	
 	fileprivate struct PathNames {
@@ -299,6 +295,7 @@ class BreakoutView: NamedBezierPathsView, UIDynamicAnimatorDelegate, UICollision
 		return paddle
 	}()
 	
+	/// Add a collision boundary for the paddle with its current frame to the ballBehavior.
 	fileprivate func addPaddleBarrier()
 	{
 		// create a collision boundary for the paddle with its current frame
