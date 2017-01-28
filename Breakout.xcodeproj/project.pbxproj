@@ -26,7 +26,7 @@
 		213604DA1DE205B100ACF841 /* BallBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallBehavior.swift; sourceTree = "<group>"; };
 		213604DE1DE2203000ACF841 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		213604E31DE4E39A00ACF841 /* NamedBezierPathsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NamedBezierPathsView.swift; sourceTree = "<group>"; };
-		21E046C61E3C31140002AF53 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		21E046C61E3C31140002AF53 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = Breakout/README.md; sourceTree = "<group>"; };
 		21E580861DE0A2FB007DC07B /* Breakout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E580891DE0A2FB007DC07B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		21E5808E1DE0A2FB007DC07B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -61,6 +61,7 @@
 		21E5807D1DE0A2FB007DC07B = {
 			isa = PBXGroup;
 			children = (
+				21E046C61E3C31140002AF53 /* README.md */,
 				21E580881DE0A2FB007DC07B /* Breakout */,
 				21E580871DE0A2FB007DC07B /* Products */,
 			);
@@ -86,7 +87,6 @@
 				213604E31DE4E39A00ACF841 /* NamedBezierPathsView.swift */,
 				21E5809B1DE0A345007DC07B /* Supporting Files */,
 				21E580901DE0A2FB007DC07B /* Assets.xcassets */,
-				21E046C61E3C31140002AF53 /* README.md */,
 			);
 			path = Breakout;
 			sourceTree = "<group>";
